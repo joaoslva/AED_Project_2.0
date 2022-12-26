@@ -1,6 +1,5 @@
 #include "headers/FlightManager2000.h"
 
-
 void FlightManager2000::addAirports(const std::string& pathName) {
     std::string code;
     std::string name;
@@ -78,10 +77,5 @@ void FlightManager2000::addAirlines(std::string pathName) {
         airline = Airline(code, name, callSign, country);
 
         airlines.insert(airline);
-
     }
-
-
-
-
 }

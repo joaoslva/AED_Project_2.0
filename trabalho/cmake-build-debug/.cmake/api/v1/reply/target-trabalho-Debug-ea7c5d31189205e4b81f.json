@@ -54,9 +54,9 @@
 			[
 				0,
 				1,
+				2,
 				3,
-				5,
-				7
+				4
 			]
 		}
 	],
@@ -91,18 +91,9 @@
 			[
 				0,
 				1,
-				3,
-				5,
-				7
-			]
-		},
-		{
-			"name" : "Header Files",
-			"sourceIndexes" : 
-			[
 				2,
-				4,
-				6
+				3,
+				4
 			]
 		}
 	],
@@ -122,30 +113,15 @@
 		},
 		{
 			"backtrace" : 1,
-			"path" : "headers/Airport.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "Airline.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "headers/Airline.h",
-			"sourceGroupIndex" : 1
-		},
-		{
-			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "FlightManager2000.cpp",
 			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "headers/FlightManager2000.h",
-			"sourceGroupIndex" : 1
 		},
 		{
 			"backtrace" : 1,
