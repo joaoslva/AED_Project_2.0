@@ -12,20 +12,6 @@
 #include "Airline.h"
 #include "graph.h"
 
-
-struct airportHash{
-    int operator() (const Airport& airport) const {
-        std::string s1 = airport.getCode();
-        int v = 0;
-        for ( unsigned int i=0; i < s1.size(); i++ )
-            v = 37*v + s1[i];
-        return v;
-    }
-    bool operator() (const Airport& airport1, const Airport& airport2) const{
-        return airport1.getCode() == airport2.getCode();
-    }
-};
-
 struct airlineHash{
     int operator() (const Airline& airline) const {
         std::string s1 = airline.getCode();
@@ -39,18 +25,12 @@ struct airlineHash{
     }
 };
 
-
-
-typedef std::unordered_set<Airport,airportHash,airportHash> Airports;
-typedef std::unordered_set<Airport,airportHash,airportHash>::iterator iteratorAirport;
-
 typedef std::unordered_set<Airline,airlineHash,airlineHash> Airlines;
 typedef std::unordered_set<Airline,airlineHash,airlineHash>::iterator iteratorAirline;
 
 
 class FlightManager2000 {
     private:
-        Airports airports;
         Airlines airlines;
         Graph airportsGraph;
 
@@ -63,8 +43,8 @@ class FlightManager2000 {
         //void airportAirLines(std::string AirPortName);
         //void airportRange(std::string AirPortName, int numFlights);
 
+        int airportsSize(){return airportsGraph.nodesSize();}
         int airlinesSize(){return airlines.size();}
-        int airportsSize() {return airports.size();}
 };
 
 
