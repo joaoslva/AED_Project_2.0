@@ -53,11 +53,14 @@ void Graph::addAirports(const string& pathName) {
         latitude = std::stod(data);
         getline(inputString, data, '\r');
         longitude = std::stod(data);
-        node node;
-        node.airport = Airport(code, name, city, country, latitude, longitude);
-        node.visited = false;
-        node.distance = 0;
-        nodes['code'] = 5;
+        node n;
+        n.airport = Airport(code, name, city, country, latitude, longitude);
+        n.visited = false;
+        n.distance = 0;
+        nodes[code] = n;
 
     }
+}
+void Graph::getNumberAirports() {
+    cout << nodes.size();
 }

@@ -22,7 +22,7 @@ class Graph {
     };
 
     struct node {
-        Airport airport = Airport();
+        Airport airport;
         list<Edge> adj;
         bool visited;
         int distance;
@@ -30,24 +30,27 @@ class Graph {
 
     int n = 0;
 
-    struct airportHash {
-        int operator() (const Airport& airport) const {
-            std::string s1 = airport.getCode();
+    struct nodeHash {
+        int operator() (const string& n) const {
+            string s = n;
             int v = 0;
-            for (unsigned int i = 0; i < s1.size(); i++)
-                v = 37 * v + s1[i];
+            for (unsigned int i = 0; i < s.size(); i++)
+                v = 37 * v + s[i];
 
             return v;
         }
-        bool operator() (const Airport& airport1, const Airport& airport2) const {
-            return airport1.getCode() == airport2.getCode();
+        bool operator() (const string& n1, const string& n2) const {
+            return n1 == n2;
         }
     };
-    typedef std::unordered_map<string, int, airportHash, airportHash> nodes;
-    typedef std::unordered_map<string, int, airportHash, airportHash>::iterator nodesItr;
+
+    typedef std::unordered_map<string, node, nodeHash, nodeHash> Nodes;
+    typedef std::unordered_map<string, node, nodeHash, nodeHash>::iterator nodesItr;
+    Nodes nodes;
 public:
     Graph();
     void addAirports(const std::string& pathName);
+    void getNumberAirports();
     void addEdge(int src, int dest, int weight = 1);
     void dfs(int v);
 };
