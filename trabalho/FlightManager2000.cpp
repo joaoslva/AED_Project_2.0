@@ -1,45 +1,44 @@
 #include "headers/FlightManager2000.h"
 
 void FlightManager2000::addAirports(const std::string& pathName) {
-    std::string code;
-    std::string name;
-    std::string city;
-    std::string country;
+    string name;
+    string city;
+    string country;
+    string code;
     double latitude;
     double longitude;
 
     int count = 0;
 
-    std::ifstream file;
+    ifstream file;
     file.open(pathName);
 
     Airport airport = Airport();
 
-    for(std::string line; std::getline(file, line);){
+    for(string line; getline(file, line);){
         if(count == 0){
             count++;
             continue;
         }
 
-        std::stringstream inputString(line);
-        std::string data;
+        stringstream inputString(line);
+        string data;
 
-        std::getline(inputString, data, ',');
+        getline(inputString, data, ',');
         code = data;
-        std::getline(inputString, data, ',');
+        getline(inputString, data, ',');
         name = data;
-        std::getline(inputString, data, ',');
+        getline(inputString, data, ',');
         city = data;
-        std::getline(inputString, data, ',');
+        getline(inputString, data, ',');
         country = data;
-        std::getline(inputString, data, ',');
+        getline(inputString, data, ',');
         latitude = std::stod(data);
-        std::getline(inputString, data, '\r');
+        getline(inputString, data, '\r');
         longitude = std::stod(data);
 
         airport = Airport(code, name, city, country, latitude, longitude);
-
-        airports.insert(airport);
+        airportsGraph.addNode(airport);
     }
 }
 

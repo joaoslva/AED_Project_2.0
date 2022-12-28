@@ -4,6 +4,8 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <unordered_map>
+#include "Airport.h"
 
 using namespace std;
 
@@ -14,17 +16,33 @@ class Graph {
     };
 
     struct Node {
+        Airport airport;
         list<Edge> adj;
         bool visited;
+        int distance;
     };
 
-    int n;
-    bool hasDir;
-    vector<Node> nodes;
+    struct nodeHash {
+        int operator() (const string& n) const {
+            string s = n;
+            int v = 0;
+            for (unsigned int i = 0; i < s.size(); i++)
+                v = 37 * v + s[i];
+
+            return v;
+        }
+        bool operator() (const string& n1, const string& n2) const {
+            return n1 == n2;
+        }
+    };
+
+    typedef std::unordered_map<string, Node, nodeHash, nodeHash> Nodes;
+    typedef std::unordered_map<string, Node, nodeHash, nodeHash>::iterator nodesItr;
+    Nodes nodes;
 
 public:
-    Graph(int nodes, bool dir = false);
-    void addEdge(int src, int dest, int weight = 1);
+    void addNode(const Airport& airport);
+    int nodesSize() {return nodes.size();}
     void dfs(int v);
 };
 
