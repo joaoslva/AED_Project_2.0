@@ -9,8 +9,8 @@
 
 class Graph {
     struct Edge {
-        int dest;
-        int weight;
+        std::string dest;
+        std::string airline;
     };
 
     struct Airport {
@@ -21,8 +21,8 @@ class Graph {
         double latitude;
         double longitude;
         std::list<Edge> adj;
-        bool visited;
-        int distance;
+        bool visited = false;
+        int distance = 0;
     };
 
     struct nodeHash {
@@ -39,13 +39,15 @@ class Graph {
         }
     };
 
-    typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash> Nodes;
-    typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash>::iterator nodesItr;
-    Nodes nodes;
+    typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash> Airports;
+    typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash>::iterator AirportsItr;
+    AirportsItr airportsItr;
+    Airports airports;
 
 public:
     void addAirport(std::string &code, std::string &name, std::string &city, std::string &country, double &latitude, double &longitude);
-    int nodesSize() {return nodes.size();}
+    void addEdge(std::string src, std:: string dest, std::string airline);
+    int AirportSize() {return airports.size();}
     void dfs(int v);
 };
 

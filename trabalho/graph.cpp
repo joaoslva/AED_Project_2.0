@@ -12,9 +12,7 @@ void Graph::addAirport(std::string &code, std::string &name, std::string &city, 
     n.city  = city;
     n.longitude = longitude;
     n.latitude = latitude;
-    n.distance = 0;
-    n.visited = false;
-    nodes[code] = n;
+    airports[code] = n;
 }
 /*
 void Graph::dfs(int v) {

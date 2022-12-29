@@ -42,7 +42,7 @@ class FlightManager2000 {
         //void airportAirLines(std::string AirPortName);
         //void airportRange(std::string AirPortName, int numFlights);
 
-        int airportsSize(){return airportsGraph.nodesSize();}
+        int airportsSize(){return airportsGraph.airportSize();}
         int airlinesSize(){return airlines.size();}
 
         bool checkFileOpening();
