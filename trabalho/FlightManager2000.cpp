@@ -78,3 +78,7 @@ void FlightManager2000::addAirlines(std::string pathName) {
         airlines.insert(airline);
     }
 }
+
+bool FlightManager2000::checkFileOpening(){
+    return airportsGraph.nodesSize() > 0 && airlinesSize() > 0;
+}

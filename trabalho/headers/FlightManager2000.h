@@ -45,6 +45,8 @@ class FlightManager2000 {
 
         int airportsSize(){return airportsGraph.nodesSize();}
         int airlinesSize(){return airlines.size();}
+
+        bool checkFileOpening();
 };
 
 
