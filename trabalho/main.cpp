@@ -2,18 +2,19 @@
 #include <ctime>
 #include <limits>
 #include "headers/FlightManager2000.h"
-
-int main(void) {
+/*
+int main() {
 
     FlightManager2000 flightManager2000 = FlightManager2000();
     flightManager2000.addAirports("../../trabalho/dataset/airports.csv");
     flightManager2000.addAirlines("../../trabalho/dataset/airlines.csv");
+    flightManager2000.addEdges("../../trabalho/dataset/flights.csv");
     std::cout << flightManager2000.airportsSize() << '\n';
     std::cout << flightManager2000.airlinesSize() << '\n';
 }
-     /*
+*/
 
-void check(bool& exit){
+void check(bool& condition){
     std::string checkChoice;
     while(true){
         std::cout << "| Do you wish to use this functionality again or go back?  |\n";
@@ -28,7 +29,9 @@ void check(bool& exit){
         }
 
         else if(checkChoice == "back"){
-            exit = true;
+            condition = false;
+            std::cout << "|                                                          |\n";
+            std::cout << " ---------------------------------------------------------- \n";
             break;
         }
 
@@ -45,7 +48,7 @@ void check(bool& exit){
 
 int main() {
     bool running = true;
-    time_t now = time(0);
+    time_t now = time(nullptr);
     tm* localtm = localtime(&now);
 
     std::cout << " __________________________________________________________ \n";
@@ -57,6 +60,7 @@ int main() {
     FlightManager2000 flightManager2000 = FlightManager2000();
     flightManager2000.addAirports("../../trabalho/dataset/airports.csv");
     flightManager2000.addAirlines("../../trabalho/dataset/airlines.csv");
+    flightManager2000.addEdges("../../trabalho/dataset/flights.csv");
 
     if(!flightManager2000.checkFileOpening()){
         running = false;
@@ -94,8 +98,13 @@ int main() {
         }
 
         else if(choice == 3){
+            bool airportFlightsRunning = true;
             std::cout << "|----------------------Airport Flights---------------------|\n";
             std::cout << "|                                                          |\n";
+            while (airportFlightsRunning){
+                flightManager2000.airportFlights();
+                check(airportFlightsRunning);
+            }
         }
 
         else if(choice == 4){
@@ -142,8 +151,8 @@ int main() {
             }
 
             std::cout << "|                                                          |\n";
-            std::cout << "-----------------------------------------------------------|\n";
-            std::cout << "                                                           |\n";
+            std::cout << "|----------------------------------------------------------|\n";
+            std::cout << "|                                                          |\n";
             std::cout << "| Select one of the following functionalities              |\n";
             std::cout << "|                                                          |\n";
         }
@@ -151,13 +160,13 @@ int main() {
         else if(choice == 7){
             std::cout << "| Thanks for using Duovago!                                |\n";
             std::cout << "|                                                          |\n";
-            std::cout << "------------------------------------------------------------\n";
+            std::cout << " ---------------------------------------------------------- \n";
             running = false;
         }
 
         else{
-            std::cout << "█ Not a valid input, please try again                      █\n";
-            std::cout << "█                                                          █\n";
+            std::cout << "| Not a valid input, please try again                      |\n";
+            std::cout << "|                                                          |\n";
             choice = 0;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -165,4 +174,3 @@ int main() {
     }
     return 0;
 }
-*/

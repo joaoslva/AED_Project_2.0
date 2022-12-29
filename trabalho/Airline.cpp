@@ -14,6 +14,10 @@ Airline::Airline(std::string code, std::string name, std::string callSign, std::
     this->callSign = callSign;
     this->country = country;
 }
+bool Airline::operator==(const Airline &airline) const {
+    return code == airline.getCode();
+}
+
 std::string Airline::getCode() const {return code;}
 std::string Airline::getCountry() const {return  country;}
 std::string Airline::getName() const {return name;}

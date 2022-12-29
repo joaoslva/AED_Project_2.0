@@ -4,13 +4,15 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <limits>
 #include <unordered_map>
 
 
 class Graph {
     struct Edge {
         std::string dest;
-        std::string airline;
+        std::string airlineCode;
+        std::string airLineName;
     };
 
     struct Airport {
@@ -18,8 +20,8 @@ class Graph {
         std::string name;
         std::string city;
         std::string country;
-        double latitude;
-        double longitude;
+        double latitude = 0;
+        double longitude = 0;
         std::list<Edge> adj;
         bool visited = false;
         int distance = 0;
@@ -41,14 +43,15 @@ class Graph {
 
     typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash> Airports;
     typedef std::unordered_map<std::string, Airport, nodeHash, nodeHash>::iterator AirportsItr;
-    AirportsItr airportsItr;
     Airports airports;
 
 public:
     void addAirport(std::string &code, std::string &name, std::string &city, std::string &country, double &latitude, double &longitude);
-    void addEdge(std::string src, std:: string dest, std::string airline);
-    int AirportSize() {return airports.size();}
-    void dfs(int v);
+    void addEdge(std::string src, std:: string dest, std::string airlineCode, std::string airlineName);
+    int airportsSize() {return airports.size();}
+    void dfs(const std::string& code);
+    void printAirportAirlines();
+    void printAirportFlights();
 };
 
 #endif

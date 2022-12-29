@@ -77,6 +77,53 @@ void FlightManager2000::addAirlines(std::string pathName) {
     }
 }
 
+void FlightManager2000::addEdges(const std::string &pathName) {
+    std::string src;
+    std::string dest;
+    std::string airlineCode;
+    std::string airlineName;
+
+
+    int count = 0;
+
+    std::ifstream file;
+    file.open(pathName);
+
+    Airline airline1 = Airline();
+    Airline airline2 = Airline();
+
+    for(std::string line; std::getline(file, line);){
+        if(count == 0){
+            count++;
+            continue;
+        }
+
+        std::stringstream inputString(line);
+        std::string data;
+
+        std::getline(inputString, data, ',');
+        src = data;
+        std::getline(inputString, data, ',');
+        dest = data;
+        std::getline(inputString, data, '\r');
+        airlineCode = data;
+
+        airline2 = Airline(airlineCode,"","","");
+        airlineName = airlines.find(airline2)->getName();
+
+        airportsGraph.addEdge(src, dest, airlineCode, airlineName);
+    }
+}
+
+
 bool FlightManager2000::checkFileOpening(){
-    return airportsGraph.nodesSize() > 0 && airlinesSize() > 0;
+    return airportsGraph.airportsSize() > 0 && airlinesSize() > 0;
+}
+
+void FlightManager2000::airportAirLines() {
+    airportsGraph.printAirportAirlines();
+}
+
+void FlightManager2000::airportFlights(){
+    airportsGraph.printAirportFlights();
 }

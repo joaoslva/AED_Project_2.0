@@ -38,14 +38,15 @@ class FlightManager2000 {
         void addAirlines(std::string pathName);
         //void bestFlightAtoB();
         //void connectionAirport();
-        //void airportFlights(std::string AirPortName);
-        //void airportAirLines(std::string AirPortName);
+        void airportFlights();
+        void airportAirLines();
         //void airportRange(std::string AirPortName, int numFlights);
 
-        int airportsSize(){return airportsGraph.airportSize();}
+        int airportsSize(){return airportsGraph.airportsSize();}
         int airlinesSize(){return airlines.size();}
-
+        void addEdges(const std::string& pathName);
         bool checkFileOpening();
+
 };
 
 
