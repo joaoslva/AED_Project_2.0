@@ -1,28 +1,27 @@
 #include "headers/FlightManager2000.h"
 
 void FlightManager2000::addAirports(const std::string& pathName) {
-    string name;
-    string city;
-    string country;
-    string code;
+    std::string name;
+    std::string city;
+    std::string country;
+    std::string code;
     double latitude;
     double longitude;
 
     int count = 0;
 
-    ifstream file;
+    std::ifstream file;
     file.open(pathName);
 
-    Airport airport = Airport();
 
-    for(string line; getline(file, line);){
+    for(std::string line; getline(file, line);){
         if(count == 0){
             count++;
             continue;
         }
 
-        stringstream inputString(line);
-        string data;
+        std::stringstream inputString(line);
+        std::string data;
 
         getline(inputString, data, ',');
         code = data;
@@ -37,8 +36,7 @@ void FlightManager2000::addAirports(const std::string& pathName) {
         getline(inputString, data, '\r');
         longitude = std::stod(data);
 
-        airport = Airport(code, name, city, country, latitude, longitude);
-        airportsGraph.addNode(airport);
+        airportsGraph.addAirport(code, name, city, country, latitude, longitude);
     }
 }
 
