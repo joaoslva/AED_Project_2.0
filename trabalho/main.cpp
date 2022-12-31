@@ -2,18 +2,18 @@
 #include <ctime>
 #include <limits>
 #include "headers/FlightManager2000.h"
-/*
+
 int main() {
 
     FlightManager2000 flightManager2000 = FlightManager2000();
     flightManager2000.addAirports("../../trabalho/dataset/airports.csv");
     flightManager2000.addAirlines("../../trabalho/dataset/airlines.csv");
     flightManager2000.addEdges("../../trabalho/dataset/flights.csv");
-    std::cout << flightManager2000.airportsSize() << '\n';
-    std::cout << flightManager2000.airlinesSize() << '\n';
+    flightManager2000.bestFlightAtoB();
+    //flightManager2000.test1();
 }
-*/
 
+/*
 void check(bool& condition){
     std::string checkChoice;
     while(true){
@@ -88,8 +88,13 @@ int main() {
         std::cout << "|                                                          \n";
 
         if(choice == 1){
+            bool bestFlightToRunning = true;
             std::cout << "|----------------------Best Flight To----------------------\n";
             std::cout << "|                                                          \n";
+            while(bestFlightToRunning){
+                flightManager2000.bestFlightAtoB();
+                check(bestFlightToRunning);
+            }
         }
 
         else if(choice == 2){
@@ -130,7 +135,8 @@ int main() {
             std::cout << "| How each functionality works                             \n";
             std::cout << "|                                                          \n";
             std::cout << "| Best Flight To:                                          \n";
-            std::cout << "| Connection Airports:                                     \n";
+            std::cout << "| Connection Airports: This function shows you airports    \n";
+            std::cout << "|    in a specified region that are connection points;\n";
             std::cout << "| Airport Flights: This function shows you all the         \n";
             std::cout << "|    destinations for a specified airport;\n";
             std::cout << "| Airport Airlines: This function shows you all the        \n";
@@ -181,3 +187,4 @@ int main() {
     }
     return 0;
 }
+*/

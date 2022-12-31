@@ -40,7 +40,7 @@ void FlightManager2000::addAirports(const std::string& pathName) {
     }
 }
 
-void FlightManager2000::addAirlines(std::string pathName) {
+void FlightManager2000::addAirlines(const std::string& pathName) {
     std::string code;
     std::string name;
     std::string callSign;
@@ -115,9 +115,106 @@ void FlightManager2000::addEdges(const std::string &pathName) {
     }
 }
 
+void FlightManager2000::bestFlightAtoB() {
+    int choice = 0;
+    std::string airlineChoice;
+    std::string airlineString;
+    std::vector<std::string> airlinesVector;
+
+    std::cout << "| Select one of the following options:                     \n";
+    std::cout << "|                                                          \n";
+    std::cout << "| 1 - Simple search                                        \n";
+    std::cout << "| 2 - Search by city                                       \n";
+    std::cout << "| 3 - Search by location                                   \n";
+    std::cout << "|                                                          \n";
+    std::cout << "| Enter here: ";
+    std::cin >> choice;
+
+    while(std::cin.eof()){
+        std::cout << "| Not a valid input, please try again                      \n";
+        std::cout << "|                                                          \n";
+        std::cout << "| Enter here: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    while(true){
+        if(choice == 1){
+            std::string src, dest;
+            std::cout << "|                                                          \n";
+            std::cout << "| Write here the source airport                            \n";
+            std::cout << "| Enter here: ";
+            std::cin >> src;
+            std::cout << "| Write here the destination airport                       \n";
+            std::cout << "| Enter here: ";
+            std::cin >> dest;
+
+            while(true){
+                std::cout << "| Do you wish to specify any airlines to flight on?        \n";
+                std::cout << "| Enter here ('yes'/'no'): ";
+                std::cin >> airlineChoice;
+
+                if(airlineChoice == "yes"){
+                    std::cout << "|                                                          \n";
+                    std::cout << "| Write 'stop' after you inserted all the wished airline   \n";
+
+                    while(true){
+                        std::cout << "| Enter here a airline code: ";
+                        std::cin >> airlineString;
+
+                        if(airlineString == "stop") break;
+
+                        airlinesVector.push_back(airlineString);
+                    }
+                    Airline airlineHelper;
+                    bool exit = false;
+
+                    for(const std::string& airlineCode : airlinesVector){
+                        airlineHelper = Airline(airlineCode, "", "", "");
+                        if(std::find(airlines.begin(), airlines.end(), airlineHelper) == airlines.end()){
+                            exit = true;
+                            break;
+                        }
+                    }
+
+                    if(exit){
+                        std::cout << "|                                                          \n";
+                        std::cout << "| Error: One or more airlines given don´t exist in the database!\n";
+                        break;
+                    }
+
+                    airportsGraph.simpleShortestPath(src, dest, airlinesVector);
+                    break;
+                }
+
+                else if(airlineChoice == "no"){
+                    airportsGraph.simpleShortestPath(src, dest, airlinesVector);
+                    break;
+                }
+
+                else{
+                    std::cout << "| Not a valid input, please try again                      \n";
+                    std::cout << "|                                                          \n";
+                    airlineChoice = "";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+            }
+            break;
+        }
+
+        else if(choice == 2){
+            break;
+        }
+
+        else if(choice == 3){
+            break;
+        }
+    }
+}
 
 bool FlightManager2000::checkFileOpening(){
-    return airportsGraph.airportsSize() > 0 && airlinesSize() > 0;
+    return airportsGraph.airportsSize() > 0 && airlinesSize() > 0 && airportsGraph.airportsSize() > 0;
 }
 
 void FlightManager2000::airportAirLines() {
@@ -127,3 +224,9 @@ void FlightManager2000::airportAirLines() {
 void FlightManager2000::airportFlights(){
     airportsGraph.printAirportFlights();
 }
+
+void FlightManager2000::connectionAirport() {
+
+}
+
+

@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <iterator>
-
+#include <vector>
 #include "Airline.h"
 #include "graph.h"
 
@@ -35,9 +35,9 @@ class FlightManager2000 {
 
     public:
         void addAirports(const std::string& pathName);
-        void addAirlines(std::string pathName);
-        //void bestFlightAtoB();
-        //void connectionAirport();
+        void addAirlines(const std::string& pathName);
+        void bestFlightAtoB();
+        void connectionAirport();
         void airportFlights();
         void airportAirLines();
         //void airportRange(std::string AirPortName, int numFlights);
@@ -46,6 +46,7 @@ class FlightManager2000 {
         int airlinesSize(){return airlines.size();}
         void addEdges(const std::string& pathName);
         bool checkFileOpening();
+        void test1() {airportsGraph.findArticulationPoints();}
 
 };
 
