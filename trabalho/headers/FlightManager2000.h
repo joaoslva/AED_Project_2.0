@@ -38,6 +38,8 @@ class FlightManager2000 {
         void addAirlines(const std::string& pathName);
         void bestFlightAtoB();
         void connectionAirport();
+
+        //Airport stats functions
         void airportFlights();
         void airportAirLines();
         //void airportRange(std::string AirPortName, int numFlights);

@@ -2,7 +2,7 @@
 #include <ctime>
 #include <limits>
 #include "headers/FlightManager2000.h"
-
+/*
 int main() {
 
     FlightManager2000 flightManager2000 = FlightManager2000();
@@ -13,7 +13,7 @@ int main() {
     //flightManager2000.test1();
 }
 
-/*
+*/
 void check(bool& condition){
     std::string checkChoice;
     while(true){
@@ -77,11 +77,9 @@ int main() {
         int choice = 0;
         std::cout << "| 1 - Best Flight To                                       \n";
         std::cout << "| 2 - Connection Airports                                  \n";
-        std::cout << "| 3 - Airport Flights                                      \n";
-        std::cout << "| 4 - Airport Airlines                                     \n";
-        std::cout << "| 5 - Airport Range                                        \n";
-        std::cout << "| 6 - Help page                                            \n";
-        std::cout << "| 7 - Quit the program                                     \n";
+        std::cout << "| 3 - Airport Stats                                        \n";
+        std::cout << "| 4 - Help page                                            \n";
+        std::cout << "| 5 - Quit the program                                     \n";
         std::cout << "|                                                          \n";
         std::cout << "| Enter here your choice: ";
         std::cin >> choice;
@@ -103,31 +101,102 @@ int main() {
         }
 
         else if(choice == 3){
-            bool airportFlightsRunning = true;
-            std::cout << "|----------------------Airport Flights---------------------\n";
+            bool airportStatsRunning = true;
+            int airportStatsChoice = 0;
+            std::cout << "|-----------------------Airport Stats----------------------\n";
             std::cout << "|                                                          \n";
-            while (airportFlightsRunning){
-                flightManager2000.airportFlights();
-                check(airportFlightsRunning);
+
+            while(airportStatsRunning){
+                std::cout << "| Choose one of the following options:                     \n";
+                std::cout << "|                                                          \n";
+                std::cout << "| 1 - Airport Flight Destinations                          \n";
+                std::cout << "| 2 - Airport Operating Airlines                           \n";
+                std::cout << "| 3 - Airport Range                                        \n";
+                std::cout << "| 4 - Help page                                            \n";
+                std::cout << "| 5 - Go back to the menu                                  \n";
+                std::cout << "|                                                          \n";
+                std::cout << "| Enter here your choice: ";
+                std::cin >> airportStatsChoice;
+                std::cout << "|                                                          \n";
+
+                if(airportStatsChoice == 1){
+                    bool option1Running = true;
+                    while(option1Running){
+                        flightManager2000.airportFlights();
+                        check(option1Running);
+                    }
+                }
+
+                else if(airportStatsChoice == 2){
+                    bool option2Running = true;
+                    while(option2Running){
+                        flightManager2000.airportAirLines();
+                        check(option2Running);
+                    }
+                }
+
+                else if(airportStatsChoice == 3){
+
+                }
+
+                else if(airportStatsChoice == 4){
+                    std::string helpChoice;
+                    bool helpRunning = true;
+                    std::cout << "|------------------------Help Page-------------------------\n";
+                    std::cout << "|                                                          \n";
+                    std::cout << "| How each functionality works                             \n";
+                    std::cout << "|                                                          \n";
+                    std::cout << "| Airport Flight Destinations:                             \n";
+                    std::cout << "| Airport Operating Airlines:                              \n";
+                    std::cout << "| BAirport Range:                                          \n";
+                    std::cout << "|                                                          \n";
+                    std::cout << "| Write 'back' to go to the previous page                  \n";
+                    std::cout << "| Enter here: ";
+
+                    while(helpRunning){
+                        std::cin >> helpChoice;
+                        if(helpChoice == "back"){
+                            helpRunning = false;
+                        }
+                        else{
+                            std::cout << "| Not a valid input, please try again                      \n";
+                            std::cout << "|                                                          \n";
+                            std::cout << "| Enter here: ";
+                            helpChoice = "";
+                            std::cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        }
+                    }
+
+                    std::cout << "|                                                          \n";
+                    std::cout << "|----------------------------------------------------------\n";
+                    std::cout << "|                                                          \n";
+                }
+
+                else if(airportStatsChoice == 5){
+                    airportStatsRunning = false;
+                }
+
+                else if(std::cin.eof()){
+                    std::cout << "| Not a valid input, please try again                      \n";
+                    std::cout << "|                                                          \n";
+                    airportStatsChoice = 0;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
+                else{
+                    std::cout << "| Not a valid input, please try again                      \n";
+                    std::cout << "|                                                          \n";
+                    airportStatsChoice = 0;
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+
+                check(airportStatsRunning);
             }
         }
-
         else if(choice == 4){
-            bool airportAirlinesRunning = true;
-            std::cout << "|---------------------Airport Airlines---------------------\n";
-            std::cout << "|                                                          \n";
-            while(airportAirlinesRunning){
-                flightManager2000.airportAirLines();
-                check(airportAirlinesRunning);
-            }
-        }
-
-        else if(choice == 5){
-            std::cout << "|----------------------Airport Range-----------------------\n";
-            std::cout << "|                                                          \n";
-        }
-
-        else if(choice == 6){
             std::string helpChoice;
             bool helpRunning = true;
             std::cout << "|------------------------Help Page-------------------------\n";
@@ -136,13 +205,9 @@ int main() {
             std::cout << "|                                                          \n";
             std::cout << "| Best Flight To:                                          \n";
             std::cout << "| Connection Airports: This function shows you airports    \n";
-            std::cout << "|    in a specified region that are connection points;\n";
-            std::cout << "| Airport Flights: This function shows you all the         \n";
-            std::cout << "|    destinations for a specified airport;\n";
-            std::cout << "| Airport Airlines: This function shows you all the        \n";
-            std::cout << "|    airlines that operate in a specified airport;\n";
-            std::cout << "| Airport Range:                                           \n";
-            std::cout << "|                                                          \n";
+            std::cout << "|    in a specified region that are connection points;     \n";
+            std::cout << "| Airport Stats: This functionality gives you, upon request,\n";
+            std::cout << "|    multiple statistics about a specified airport;        \n";
             std::cout << "| You can type 'back' mid search to go back one page       \n";
             std::cout << "|                                                          \n";
             std::cout << "| Write 'back' to go to the main menu                      \n";
@@ -170,7 +235,7 @@ int main() {
             std::cout << "|                                                          \n";
         }
 
-        else if(choice == 7){
+        else if(choice == 5){
             std::cout << "| Thanks for using Duovago!                                \n";
             std::cout << "|                                                          \n";
             std::cout << " ---------------------------------------------------------- \n";
@@ -187,4 +252,3 @@ int main() {
     }
     return 0;
 }
-*/

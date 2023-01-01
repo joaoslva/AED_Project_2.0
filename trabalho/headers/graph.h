@@ -52,7 +52,7 @@ class Graph {
 
 public:
     void addAirport(std::string &code, std::string &name, std::string &city, std::string &country, double &latitude, double &longitude);
-    void addEdge(std::string src, std:: string dest, std::string airlineCode, std::string airlineName);
+    void addEdge(const std::string& src, std:: string dest, std::string airlineCode, std::string airlineName);
     int airportsSize();
     // void dfs(int code);
     void printAirportAirlines();
@@ -60,7 +60,7 @@ public:
     void simpleShortestPath(const std::string& src, const std::string& destination,std::vector<std::string> &airlines);
     void findArticulationPoints();
     void dfs_articulation_points(std::pair<const std::basic_string<char>, Graph::Airport> &v, int &order, std::list<Graph::Airport> &l);
-    int numberFligthsInShortestPath(const std::string& src, const std::string& destination);
+    int numberFlightsInShortestPath(const std::string& src, const std::string& destination);
 };
 
 #endif
