@@ -576,9 +576,7 @@ void FlightManager2000::airportRange() {
         }
 
         else if(airlineChoice == "no"){
-            std::cout << "aqui1\n";
             airportsGraph.printAirportRange(airportCode, numFlights, airlinesVector);
-            std::cout << "aqui2\n";
             break;
         }
 

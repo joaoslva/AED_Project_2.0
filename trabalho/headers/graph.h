@@ -61,7 +61,7 @@ public:
     void simpleShortestPath(const std::string& src, const std::string& destination,std::vector<std::string> &airlines);
     void findArticulationPoints();
     void dfs_articulation_points(std::pair<const std::basic_string<char>, Graph::Airport> &v, int &order, std::list<Graph::Airport> &l);
-    int numberFlightsInShortestPath(const std::string& src, const std::string& destination,std::vector<std::string> &airlines);
+    void numberFlightsInShortestPath(const std::string& src,std::vector<std::string> &airlines,  std::vector<std::string> &airportsFound,int distance);
     void superBestFlightAtoB(const std::string& src, const std::string& dest, std::vector<std::string> airlines, int option);
     void printAirportRange(const std::string& airportCode, int numFlights, std::vector<std::string>& airlines);
     void locationShortestPath(double latitude, double longitude, int range, const std::string& dest,std::vector<std::string>& airlines);

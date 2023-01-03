@@ -215,26 +215,24 @@ int Graph::airportsSize() {
     return airports.size();
 }
 
-int Graph::numberFlightsInShortestPath(const std::string& src, const std::string& destination, std::vector<std::string>& airlines){
+void Graph::numberFlightsInShortestPath(const std::string& src, std::vector<std::string>& airlines, std::vector<std::string> &airportsFound, int distance){
     for(auto itr = airports.begin();itr != airports.end();itr++) {
         itr->second.visited = false;
         itr->second.distance = -1;
     }
-    std::unordered_map<std::string, std::string> predecessor;
     std::queue<std::string> queue;
     airports[src].distance = 0;
     queue.push(src);
     airports[src].visited = true;
-
     while (!queue.empty()) {
         std::string current = queue.front();
         queue.pop();
-        if(destination == current) break;
+        if(airports[current].distance >= distance) break;
         for (Edge &edge: airports[current].adj){
             std::string dest = edge.dest;
             if(!airports[dest].visited){
+                airportsFound.push_back(dest);
                 airports[dest].distance = airports[current].distance +1;
-                predecessor[dest] = current;
                 airports[dest].visited = true;
                 if(airlines.empty())
                     queue.push(dest);
@@ -244,18 +242,6 @@ int Graph::numberFlightsInShortestPath(const std::string& src, const std::string
             }
         }
     }
-
-    std::vector<std::string> path;
-    std::string curr = destination;
-    if(predecessor.find(destination) != predecessor.end()){
-        while (curr != src){
-            path.push_back(curr);
-            curr = predecessor[curr];
-        }
-    }
-    path.push_back(src);
-    return (int) (path.size()-1);
-
 }
 
 void Graph::simpleShortestPath(const std::string& src, const std::string& destination, std::vector<std::string> &airlines) {
@@ -551,57 +537,52 @@ void Graph::printAirportRange(const std::string& airportCode, int numFlights, st
     std::vector<std::string> airportsFound;
     std::set<std::string> cities;
     std::set<std::string> countries;
-    if(airports.find(airportCode) == airports.end()){
-        std::cout << "| Error: The given airport code doesn't exist in the database!\n";
+    for (auto &node : airports) {
+        node.second.visited = false;
+        node.second.distance = 0;
     }
-
-    else{
+    if (airports.find(airportCode) == airports.end()) {
+        std::cout << "| Error: The given airport code doesn't exist in the database!\n";
+    } else {
         std::string printChoice;
-        for(auto itr = airports.begin(); itr != airports.end(); itr++){
-           if(itr->second.code != airportCode){
-                if(numberFlightsInShortestPath(airportCode, itr->second.code, airlines) <= numFlights){
-                    airportsFound.push_back(itr->second.code);
-                }
 
-        }
+        numberFlightsInShortestPath(airportCode, airlines, airportsFound, numFlights);
 
-        for(auto itr = airportsFound.begin(); itr != airportsFound.end(); itr++){
+        for (auto itr = airportsFound.begin(); itr != airportsFound.end(); itr++) {
             cities.insert(airports[*itr].city);
             countries.insert(airports[*itr].country);
         }
 
-        std::cout << "| There were found " + std::to_string(airportsFound.size()) + " airports, " + std::to_string(cities.size()) + " cities and " +
-                std::to_string(countries.size()) + " countries within " + std::to_string(numFlights) + " flights from airport " + airportCode + '\n';
-        std::cout << "| Do you wish to see any of them? ('airports'/'cities'/'countries')?\n";
-        while(true){
+        std::cout << "| There were found " + std::to_string(airportsFound.size()) + " airports, " +
+                     std::to_string(cities.size()) + " cities and " +
+                     std::to_string(countries.size()) + " countries within " + std::to_string(numFlights) +
+                     " flights from airport " + airportCode + '\n';
+        std::cout << "| Do you wish to see any of them? ('airports'/'cities'/'countries'/'no?)?\n";
+        while (true) {
             std::cout << "| Enter here:";
             std::cin >> printChoice;
 
-            if(printChoice == "airports"){
+            if (printChoice == "airports") {
                 std::cout << "| Here are the found airports:\n";
-                for(const std::string& string : airportsFound){
+                for (const std::string &string: airportsFound) {
                     std::cout << "| " + string + '\n';
                 }
                 break;
-            }
-
-            else if(printChoice == "cities"){
+            } else if (printChoice == "cities") {
                 std::cout << "| Here are the found cities:\n";
-                for(const std::string& string : cities){
+                for (const std::string &string: cities) {
                     std::cout << "| " + string + '\n';
                 }
                 break;
-            }
-
-            else if(printChoice == "countries"){
+            } else if (printChoice == "countries") {
                 std::cout << "| Here are the found countries:\n";
-                for(const std::string& string : countries){
+                for (const std::string &string: countries) {
                     std::cout << "| " + string + '\n';
                 }
                 break;
             }
-
-            else{
+            else if(printChoice == "no") break;
+            else {
                 std::cout << "| Not a valid input, please try again                      \n";
                 std::cout << "|                                                          \n";
                 printChoice = "";
@@ -611,3 +592,4 @@ void Graph::printAirportRange(const std::string& airportCode, int numFlights, st
         }
     }
 }
+
