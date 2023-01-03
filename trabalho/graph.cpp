@@ -215,7 +215,11 @@ int Graph::airportsSize() {
     return airports.size();
 }
 
-int Graph::numberFlightsInShortestPath(const std::string& src, const std::string& destination){
+int Graph::numberFlightsInShortestPath(const std::string& src, const std::string& destination, std::vector<std::string>& airlines){
+    for(auto itr = airports.begin();itr != airports.end();itr++) {
+        itr->second.visited = false;
+        itr->second.distance = -1;
+    }
     std::unordered_map<std::string, std::string> predecessor;
     std::queue<std::string> queue;
     airports[src].distance = 0;
@@ -232,22 +236,26 @@ int Graph::numberFlightsInShortestPath(const std::string& src, const std::string
                 airports[dest].distance = airports[current].distance +1;
                 predecessor[dest] = current;
                 airports[dest].visited = true;
-                queue.push(dest);
+                if(airlines.empty())
+                    queue.push(dest);
+                else if(std::find(airlines.begin(), airlines.end(),edge.airlineCode) != airlines.end()){
+                    queue.push(dest);
+                }
             }
         }
     }
 
     std::vector<std::string> path;
     std::string curr = destination;
-
-    while (curr != src){
-        path.push_back(curr);
-        curr = predecessor[curr];
+    if(predecessor.find(destination) != predecessor.end()){
+        while (curr != src){
+            path.push_back(curr);
+            curr = predecessor[curr];
+        }
     }
-
     path.push_back(src);
-    std::reverse(path.begin(),path.end());
-    return (int) path.size();
+    return (int) (path.size()-1);
+
 }
 
 void Graph::simpleShortestPath(const std::string& src, const std::string& destination, std::vector<std::string> &airlines) {
@@ -333,32 +341,185 @@ void Graph::simpleShortestPath(const std::string& src, const std::string& destin
     std::cout << "| The total flight distance is " + std::to_string((int) totalDistance) + " km\n";
 }
 
- void Graph::findArticulationPoints() {
-    std::list<Graph::Airport> answer;
-    for (auto &node : airports) {
-        node.second.visited = false;
-        node.second.parent = -1;
-        node.second.low = -1;
-        node.second.num = -1;
+void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest, std::vector<std::string> airlines, int option) {
+    std::vector<std::string> airportsInCitySrc;
+    std::vector<std::string> airportsInCityDest;
+    for(const auto& x:airports){
+        if(option == 2){
+            if(x.second.city == src) airportsInCitySrc.push_back(x.second.code);
+            if(x.second.city == dest) airportsInCityDest.push_back(x.second.code);
+        }
+
+        else if(option == 3){
+            if(x.second.city == src) airportsInCitySrc.push_back(x.second.code);
+            }
+        else if(option == 4){
+            if(x.second.city == dest) airportsInCityDest.push_back(x.second.code);
+            }
     }
 
-    int order = 1;
-    for (auto &nodes : airports)
-        if (!nodes.second.visited)
-            dfs_articulation_points(nodes, order, answer);
+    if((airportsInCitySrc.empty() && (option == 2 || option == 3)) || (airportsInCityDest.empty() && (option == 2 || option == 4))){
+        std::cout << "| Error: Source city or destiny city doesn't exist in the database!\n";
+    }
 
-    // longitude
-    double tropicOfCancer = 23.439;
-    double tropicOfCapricorn = -23.439;
-    double equator = 0;
-    double arcticPolarCircle = 66.33493;
-    double antarcticPolarCircle = -66.33493;
+    else{
+        std::string source; std::string destiny;
+        if(option == 2 || option == 3){
+            std::cout << "| Chose one of the following source airports:" << std::endl;
+            for(const auto& airport: airportsInCitySrc) std::cout << "| " << airport << std::endl;
+            while(true) {
+                std::cout << "| Enter here: ";
+                std::cin >> source;
+                if (std::find(airportsInCitySrc.begin(), airportsInCitySrc.end(), source) == airportsInCitySrc.end()) {
+                    std::cout << "| Error: Airport code is wrong! Try again\n";
+                }
+                else break;
+            }
+        }
+        else{
+            source = src;
+        }
 
-    for (const Airport& airport : answer) {
-        std::cout << airport.name << '\n';
-        std::cout << airport.longitude << '\n';
-        std::cout << airport.latitude << '\n';
-        std::cout << airport.code << '\n';
+        if(option == 4 || option == 2) {
+            std::cout << "| Chose one of the following destiny airports:" << std::endl;
+            for(const auto& airport: airportsInCityDest) std::cout << "| " << airport << std::endl;
+            while(true) {
+                std::cout << "| Enter here: ";
+                std::cin >> destiny;
+                if (std::find(airportsInCityDest.begin(), airportsInCityDest.end(), destiny) == airportsInCityDest.end()) {
+                    std::cout << "| Error: Airport code is wrong! Try again\n";
+                }
+                else break;
+            }
+        }
+
+        else{
+            destiny = dest;
+        }
+
+        simpleShortestPath(source,destiny,airlines);
+    }
+}
+
+ void Graph::findArticulationPoints() {
+     int choice1 = 0;
+     int choice2 = 0;
+
+     std::cout << "| Select two of the following options to create an\n"
+                  "| interval of longitudes to see articulation airports:     \n";
+     std::cout << "|                                                          \n";
+     std::cout << "| 1 - Arctic Polar Circle                                  \n";
+     std::cout << "| 2 - Tropic of Cancer                                     \n";
+     std::cout << "| 3 - Equator                                              \n";
+     std::cout << "| 4 - Tropic of Capricorn                                  \n";
+     std::cout << "| 5 - Antarctic Polar Circle                               \n";
+     std::cout << "|                                                          \n";
+
+     while(true){
+         std::cout << "| Enter here the 1st choice: ";
+         std::cin >> choice1;
+
+         if(std::cin.eof()){
+             std::cout << "| Not a valid input, please try again                      \n";
+             std::cout << "|                                                          \n";
+             choice1 = 0;
+             std::cin.clear();
+             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+         }
+
+         std::cout << "| Enter here the 2nd choice: ";
+         std::cin >> choice2;
+
+         if(std::cin.eof()){
+             std::cout << "| Not a valid input, please try again                      \n";
+             std::cout << "|                                                          \n";
+             choice2 = 0;
+             std::cin.clear();
+             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+         }
+
+         if(1 > choice1 || choice1 > 5 || 1 > choice2 || choice2> 5){
+             std::cout << "| Error: One or both inputs are invalid!                   \n";
+             break;
+         }
+
+         else{
+             std::list<Graph::Airport> answer;
+             for (auto &node : airports) {
+                 node.second.visited = false;
+                 node.second.parent = -1;
+                 node.second.low = -1;
+                 node.second.num = -1;
+             }
+
+             int order = 1;
+             for (auto &nodes : airports)
+                 if (!nodes.second.visited)
+                     dfs_articulation_points(nodes, order, answer);
+
+             /*
+             longitude
+             tropicOfCancer = 23.439;
+             tropicOfCapricorn = -23.439;
+             equator = 0;
+             arcticPolarCircle = 66.33493;
+             antarcticPolarCircle = -66.33493;
+              */
+
+             std::vector<std::pair<std::string, double>> longitudes;
+             longitudes.push_back({"Arctic Polar Circle", 66.335});
+             longitudes.push_back({"Tropic of Cancer", 23.439});
+             longitudes.push_back({"Equator", 0.000});
+             longitudes.push_back({"Tropic of Capricorn", 23.439});
+             longitudes.push_back({"Antarctic Polar Circle", 66.335});
+
+             std::cout << "| Here are the connection airports between " + longitudes[choice1].first + " and " + longitudes[choice2].first + ":\n";
+
+             for (const Airport& airport : answer) {
+                 if (airport.longitude >= std::min(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second) and airport.longitude <= std::max(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second)) {
+                     std::cout << "| Airport Name: " + airport.name + "; Airport Code: " + airport.code + "; Airport Location: " + std::to_string(airport.latitude) + ", " + std::to_string(airport.longitude) + '\n';
+                 }
+             }
+             break;
+         }
+     }
+
+}
+
+void Graph::locationShortestPath(double latitude, double longitude, int range, const std::string& dest, std::vector<std::string>& airlines) {
+    std::vector<std::pair<std::string,int>> output;
+    double dist;
+    for(auto itr = airports.begin(); itr != airports.end(); itr++){
+        dist = haversine(latitude, longitude, itr->second.latitude, itr->second.longitude);
+        if(dist <= range){
+            output.push_back({itr->second.code,(int)dist});
+        }
+    }
+    if(output.empty()){
+        std::cout << "| \n";
+        std::cout << "| Error: For the given data, no airports were found!\n";
+    }
+
+    else{
+        std::string src;
+        std::vector<std::string> srcAirports;
+        std::cout << "| \n";
+        std::cout << "| The following airports where found. Select one for departure:\n";
+        for(const std::pair<std::string,int>& pair : output){
+            srcAirports.push_back(pair.first);
+            std::cout << "| Code: " + pair.first + "; Distance to you: " + std::to_string(pair.second) + " km\n";
+        }
+
+        while(true) {
+            std::cout << "| Enter here: ";
+            std::cin >> src;
+            if (std::find(srcAirports.begin(), srcAirports.end(), src) == srcAirports.end()) {
+                std::cout << "| Error: Airport code is wrong! Try again\n";
+            }
+            else break;
+        }
+
+        simpleShortestPath(src,dest,airlines);
     }
 }
 
@@ -386,56 +547,67 @@ void Graph::dfs_articulation_points(std::pair<const std::basic_string<char>, Gra
         l.push_front(v.second);
 }
 
+void Graph::printAirportRange(const std::string& airportCode, int numFlights, std::vector<std::string> &airlines) {
+    std::vector<std::string> airportsFound;
+    std::set<std::string> cities;
+    std::set<std::string> countries;
+    if(airports.find(airportCode) == airports.end()){
+        std::cout << "| Error: The given airport code doesn't exist in the database!\n";
+    }
 
-void istoéoprintparaoconnectionairports(){
-    int choice = 0;
-
-    std::cout << "| Select one of the following options:                     \n";
-    std::cout << "|                                                          \n";
-    std::cout << "| 1 - Connection airports between the Antarctic Polar Circle\n";
-    std::cout << "|        and the Tropic of Capricorn                       \n";
-    std::cout << "| 2 - Connection airports between the Tropic of Capricorn  \n";
-    std::cout << "|        and the Equator                                   \n";
-    std::cout << "| 3 - Connection airports between the Equator and the      \n";
-    std::cout << "|        Tropic of Cancer                                  \n";
-    std::cout << "| 4 - Connection airports between the Tropic of Cancer     \n";
-    std::cout << "|        and the Arctic Polar Circle                       \n";
-    std::cout << "|                                                          \n";
-
-    while(true){
-        std::cout << "| Enter here: ";
-        std::cin >> choice;
-
-        if(choice == 1){
-            break;
-        }
-
-        else if(choice == 2){
-            break;
-        }
-
-        else if(choice == 3){
-            break;
-        }
-
-        else if(choice == 4){
+    else{
+        std::string printChoice;
+        for(auto itr = airports.begin(); itr != airports.end(); itr++){
+           if(itr->second.code != airportCode){
+                if(numberFlightsInShortestPath(airportCode, itr->second.code, airlines) <= numFlights){
+                    airportsFound.push_back(itr->second.code);
+                }
 
         }
 
-        else if(std::cin.eof()){
-            std::cout << "| Not a valid input, please try again                      \n";
-            std::cout << "|                                                          \n";
-            choice = 0;
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        for(auto itr = airportsFound.begin(); itr != airportsFound.end(); itr++){
+            cities.insert(airports[*itr].city);
+            countries.insert(airports[*itr].country);
         }
 
-        else{
-            std::cout << "| Not a valid input, please try again                      \n";
-            std::cout << "|                                                          \n";
-            choice = 0;
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "| There were found " + std::to_string(airportsFound.size()) + " airports, " + std::to_string(cities.size()) + " cities and " +
+                std::to_string(countries.size()) + " countries within " + std::to_string(numFlights) + " flights from airport " + airportCode + '\n';
+        std::cout << "| Do you wish to see any of them? ('airports'/'cities'/'countries')?\n";
+        while(true){
+            std::cout << "| Enter here:";
+            std::cin >> printChoice;
+
+            if(printChoice == "airports"){
+                std::cout << "| Here are the found airports:\n";
+                for(const std::string& string : airportsFound){
+                    std::cout << "| " + string + '\n';
+                }
+                break;
+            }
+
+            else if(printChoice == "cities"){
+                std::cout << "| Here are the found cities:\n";
+                for(const std::string& string : cities){
+                    std::cout << "| " + string + '\n';
+                }
+                break;
+            }
+
+            else if(printChoice == "countries"){
+                std::cout << "| Here are the found countries:\n";
+                for(const std::string& string : countries){
+                    std::cout << "| " + string + '\n';
+                }
+                break;
+            }
+
+            else{
+                std::cout << "| Not a valid input, please try again                      \n";
+                std::cout << "|                                                          \n";
+                printChoice = "";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
         }
     }
 }

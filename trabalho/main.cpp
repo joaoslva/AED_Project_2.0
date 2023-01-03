@@ -9,11 +9,12 @@ int main() {
     flightManager2000.addAirports("../../trabalho/dataset/airports.csv");
     flightManager2000.addAirlines("../../trabalho/dataset/airlines.csv");
     flightManager2000.addEdges("../../trabalho/dataset/flights.csv");
-    flightManager2000.bestFlightAtoB();
-    //flightManager2000.test1();
+    //flightManager2000.bestFlightAtoB();
+    flightManager2000.test2();
 }
-
 */
+
+
 void check(bool& condition){
     std::string checkChoice;
     while(true){
@@ -96,8 +97,13 @@ int main() {
         }
 
         else if(choice == 2){
-            std::cout << "|-------------------Connection Airports--------------------\n";
+            bool connectionAirportsRunning = true;
+            std::cout << "|-----------------Connection Airports----------------------\n";
             std::cout << "|                                                          \n";
+            while(connectionAirportsRunning){
+                flightManager2000.connectionAirport();
+                check(connectionAirportsRunning);
+            }
         }
 
         else if(choice == 3){
@@ -136,7 +142,11 @@ int main() {
                 }
 
                 else if(airportStatsChoice == 3){
-
+                    bool option3Running = true;
+                    while(option3Running){
+                        flightManager2000.airportRange();
+                        check(option3Running);
+                    }
                 }
 
                 else if(airportStatsChoice == 4){
@@ -148,7 +158,7 @@ int main() {
                     std::cout << "|                                                          \n";
                     std::cout << "| Airport Flight Destinations:                             \n";
                     std::cout << "| Airport Operating Airlines:                              \n";
-                    std::cout << "| BAirport Range:                                          \n";
+                    std::cout << "| Airport Range:                                          \n";
                     std::cout << "|                                                          \n";
                     std::cout << "| Write 'back' to go to the previous page                  \n";
                     std::cout << "| Enter here: ";
@@ -240,6 +250,14 @@ int main() {
             std::cout << "|                                                          \n";
             std::cout << " ---------------------------------------------------------- \n";
             running = false;
+        }
+
+        else if(std::cin.eof()){
+            std::cout << "| Not a valid input, please try again                      \n";
+            std::cout << "|                                                          \n";
+            choice = 0;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
         else{

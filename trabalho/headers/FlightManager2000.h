@@ -42,14 +42,17 @@ class FlightManager2000 {
         //Airport stats functions
         void airportFlights();
         void airportAirLines();
-        //void airportRange(std::string AirPortName, int numFlights);
+        void airportRange();
 
         int airportsSize(){return airportsGraph.airportsSize();}
         int airlinesSize(){return airlines.size();}
         void addEdges(const std::string& pathName);
         bool checkFileOpening();
         void test1() {airportsGraph.findArticulationPoints();}
-
+        void test2(){
+            std::vector<std::string> teste;
+            airportsGraph.superBestFlightAtoB("Lisbon", "Porto", teste, 1);
+        }
 };
 
 
