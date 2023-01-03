@@ -28,7 +28,6 @@ class Graph {
         std::list<Edge> adj;
         bool visited = false;
         int distance = 0;
-        int parent;
         int low;
         int num;
     };
@@ -55,7 +54,6 @@ public:
     void addAirport(std::string &code, std::string &name, std::string &city, std::string &country, double &latitude, double &longitude);
     void addEdge(const std::string& src, std:: string dest, std::string airlineCode, std::string airlineName);
     int airportsSize();
-    // void dfs(int code);
     void printAirportAirlines();
     void printAirportFlights();
     void simpleShortestPath(const std::string& src, const std::string& destination,std::vector<std::string> &airlines);

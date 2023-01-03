@@ -82,8 +82,7 @@ void Graph::printAirportFlights() {
                 }
             }
 
-            std::cout << "| There are a total of " + std::to_string(output.size()) + " destinations in " + airportCode + " airport,\n";
-            std::cout << "| for a total of " + std::to_string(countries.size()) + " countries\n";
+            std::cout << "| There are a total of " + std::to_string(output.size()) + " destinations in " + airportCode + " airport, for a total of " + std::to_string(countries.size()) + " countries\n";
             std::cout << "| Do you wish to see them all?                             \n";
 
             while(true){
@@ -161,7 +160,7 @@ void Graph::printAirportAirlines() {
                 }
             }
 
-            std::cout << "| There are a total of " + std::to_string(output.size()) + " destinations in " + airportCode +
+            std::cout << "| There are a total of " + std::to_string(output.size()) + " airlines operating in " + airportCode +
                          " airport\n";
             std::cout << "| Do you wish to see them all?                             \n";
 
@@ -231,12 +230,15 @@ void Graph::numberFlightsInShortestPath(const std::string& src, std::vector<std:
         for (Edge &edge: airports[current].adj){
             std::string dest = edge.dest;
             if(!airports[dest].visited){
-                airportsFound.push_back(dest);
                 airports[dest].distance = airports[current].distance +1;
-                airports[dest].visited = true;
-                if(airlines.empty())
+                if(airlines.empty()){
+                    airports[dest].visited = true;
+                    airportsFound.push_back(dest);
                     queue.push(dest);
+                }
                 else if(std::find(airlines.begin(), airlines.end(),edge.airlineCode) != airlines.end()){
+                    airports[dest].visited = true;
+                    airportsFound.push_back(dest);
                     queue.push(dest);
                 }
             }
@@ -249,21 +251,21 @@ void Graph::simpleShortestPath(const std::string& src, const std::string& destin
         std::cout << "|                                                          \n";
         std::cout << "| Error: Source airport doesn't exist in the data base!    \n";
         std::cout << "|                                                          \n";
+        return;
     }
 
     if(airports.find(destination) == airports.end()){
         std::cout << "|                                                          \n";
         std::cout << "| Error: Destination airport doesn't exist in the data base!\n";
         std::cout << "|                                                          \n";
+        return;
     }
 
     for(auto itr = airports.begin();itr != airports.end();itr++) {
         itr->second.visited = false;
-        itr->second.distance = -1;
     }
     std::unordered_map<std::string, std::string> predecessor;
     std::queue<std::string> queue;
-    airports[src].distance = 0;
     queue.push(src);
     airports[src].visited = true;
 
@@ -274,13 +276,16 @@ void Graph::simpleShortestPath(const std::string& src, const std::string& destin
         for (Edge &edge: airports[current].adj){
             std::string dest = edge.dest;
             if(!airports[dest].visited){
-                airports[dest].distance = airports[current].distance +1;
-                predecessor[dest] = current;
-                airports[dest].visited = true;
-                if(airlines.empty())
+                if(airlines.empty()){
                     queue.push(dest);
+                    predecessor[dest] = current;
+                    airports[dest].visited = true;
+
+                }
                 else if(std::find(airlines.begin(), airlines.end(),edge.airlineCode) != airlines.end()){
                     queue.push(dest);
+                    predecessor[dest] = current;
+                    airports[dest].visited = true;
                 }
             }
         }
@@ -312,7 +317,7 @@ void Graph::simpleShortestPath(const std::string& src, const std::string& destin
     std::cout << "| ";
     for(auto itr = path.begin(); itr != path.end(); itr++){
         if(itr != path.begin()){
-            totalDistance += haversine(airports.find(*(itr-1))->second.latitude, airports.find(*(itr-1))->second.longitude, airports.find(*(itr))->second.latitude, airports.find(*(itr))->second.longitude);
+            totalDistance += haversine(airports[*itr].latitude, airports[*itr].longitude,airports[*(itr-1)].latitude, airports[*(itr-1)].longitude);
         }
 
         if(itr != path.end() - 1){
@@ -345,6 +350,7 @@ void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest,
     }
 
     if((airportsInCitySrc.empty() && (option == 2 || option == 3)) || (airportsInCityDest.empty() && (option == 2 || option == 4))){
+        std::cout << "|\n";
         std::cout << "| Error: Source city or destiny city doesn't exist in the database!\n";
     }
 
@@ -433,11 +439,9 @@ void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest,
              std::list<Graph::Airport> answer;
              for (auto &node : airports) {
                  node.second.visited = false;
-                 node.second.parent = -1;
                  node.second.low = -1;
                  node.second.num = -1;
              }
-
              int order = 1;
              for (auto &nodes : airports)
                  if (!nodes.second.visited)
@@ -456,16 +460,17 @@ void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest,
              longitudes.push_back({"Arctic Polar Circle", 66.335});
              longitudes.push_back({"Tropic of Cancer", 23.439});
              longitudes.push_back({"Equator", 0.000});
-             longitudes.push_back({"Tropic of Capricorn", 23.439});
-             longitudes.push_back({"Antarctic Polar Circle", 66.335});
+             longitudes.push_back({"Tropic of Capricorn", -23.439});
+             longitudes.push_back({"Antarctic Polar Circle", -66.335});
 
-             std::cout << "| Here are the connection airports between " + longitudes[choice1].first + " and " + longitudes[choice2].first + ":\n";
+             std::cout << "| Here are the connection airports between " + longitudes[choice1-1].first + " and " + longitudes[choice2-1].first + ":\n";
 
              for (const Airport& airport : answer) {
                  if (airport.longitude >= std::min(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second) and airport.longitude <= std::max(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second)) {
                      std::cout << "| Airport Name: " + airport.name + "; Airport Code: " + airport.code + "; Airport Location: " + std::to_string(airport.latitude) + ", " + std::to_string(airport.longitude) + '\n';
                  }
              }
+             std::cout << "|\n";
              break;
          }
      }
@@ -490,7 +495,7 @@ void Graph::locationShortestPath(double latitude, double longitude, int range, c
         std::string src;
         std::vector<std::string> srcAirports;
         std::cout << "| \n";
-        std::cout << "| The following airports where found. Select one for departure:\n";
+        std::cout << "| The following airports were found. Select one for departure:\n";
         for(const std::pair<std::string,int>& pair : output){
             srcAirports.push_back(pair.first);
             std::cout << "| Code: " + pair.first + "; Distance to you: " + std::to_string(pair.second) + " km\n";
@@ -542,7 +547,9 @@ void Graph::printAirportRange(const std::string& airportCode, int numFlights, st
         node.second.distance = 0;
     }
     if (airports.find(airportCode) == airports.end()) {
+        std::cout << "| \n";
         std::cout << "| Error: The given airport code doesn't exist in the database!\n";
+        std::cout << "| \n";
     } else {
         std::string printChoice;
 
@@ -552,7 +559,7 @@ void Graph::printAirportRange(const std::string& airportCode, int numFlights, st
             cities.insert(airports[*itr].city);
             countries.insert(airports[*itr].country);
         }
-
+        std::cout << "| \n";
         std::cout << "| There were found " + std::to_string(airportsFound.size()) + " airports, " +
                      std::to_string(cities.size()) + " cities and " +
                      std::to_string(countries.size()) + " countries within " + std::to_string(numFlights) +
@@ -563,25 +570,32 @@ void Graph::printAirportRange(const std::string& airportCode, int numFlights, st
             std::cin >> printChoice;
 
             if (printChoice == "airports") {
+                std::sort(airportsFound.begin(), airportsFound.end());
                 std::cout << "| Here are the found airports:\n";
                 for (const std::string &string: airportsFound) {
                     std::cout << "| " + string + '\n';
                 }
+                std::cout << "|\n";
                 break;
             } else if (printChoice == "cities") {
                 std::cout << "| Here are the found cities:\n";
                 for (const std::string &string: cities) {
                     std::cout << "| " + string + '\n';
                 }
+                std::cout << "|\n";
                 break;
             } else if (printChoice == "countries") {
                 std::cout << "| Here are the found countries:\n";
                 for (const std::string &string: countries) {
                     std::cout << "| " + string + '\n';
                 }
+                std::cout << "|\n";
                 break;
             }
-            else if(printChoice == "no") break;
+            else if(printChoice == "no") {
+                std::cout << "|\n";
+                break;
+            }
             else {
                 std::cout << "| Not a valid input, please try again                      \n";
                 std::cout << "|                                                          \n";

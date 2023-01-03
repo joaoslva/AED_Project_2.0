@@ -123,30 +123,20 @@ int main() {
                 std::cout << "|                                                          \n";
                 std::cout << "| Enter here your choice: ";
                 std::cin >> airportStatsChoice;
-                std::cout << "|                                                          \n";
 
                 if(airportStatsChoice == 1){
-                    bool option1Running = true;
-                    while(option1Running){
-                        flightManager2000.airportFlights();
-                        check(option1Running);
-                    }
+                    flightManager2000.airportFlights();
+                    check(airportStatsRunning);
                 }
 
                 else if(airportStatsChoice == 2){
-                    bool option2Running = true;
-                    while(option2Running){
-                        flightManager2000.airportAirLines();
-                        check(option2Running);
-                    }
+                    flightManager2000.airportAirLines();
+                    check(airportStatsRunning);
                 }
 
                 else if(airportStatsChoice == 3){
-                    bool option3Running = true;
-                    while(option3Running){
-                        flightManager2000.airportRange();
-                        check(option3Running);
-                    }
+                    flightManager2000.airportRange();
+                    check(airportStatsRunning);
                 }
 
                 else if(airportStatsChoice == 4){
@@ -179,11 +169,18 @@ int main() {
                     }
 
                     std::cout << "|                                                          \n";
-                    std::cout << "|----------------------------------------------------------\n";
+                    std::cout << " ----------------------Main Menu---------------------------\n";
+                    std::cout << "|                                                          \n";
+                    std::cout << "| Select one of the following functionalities              \n";
                     std::cout << "|                                                          \n";
                 }
 
                 else if(airportStatsChoice == 5){
+                    std::cout << "|                                                          \n";
+                    std::cout << " ----------------------Main Menu---------------------------\n";
+                    std::cout << "|                                                          \n";
+                    std::cout << "| Select one of the following functionalities              \n";
+                    std::cout << "|                                                          \n";
                     airportStatsRunning = false;
                 }
 
@@ -202,8 +199,6 @@ int main() {
                     std::cin.clear();
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
-
-                check(airportStatsRunning);
             }
         }
         else if(choice == 4){
@@ -239,7 +234,7 @@ int main() {
             }
 
             std::cout << "|                                                          \n";
-            std::cout << "|----------------------------------------------------------\n";
+            std::cout << " ----------------------Main Menu---------------------------\n";
             std::cout << "|                                                          \n";
             std::cout << "| Select one of the following functionalities              \n";
             std::cout << "|                                                          \n";

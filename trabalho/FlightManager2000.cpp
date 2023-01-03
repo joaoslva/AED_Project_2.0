@@ -89,8 +89,8 @@ void FlightManager2000::addEdges(const std::string &pathName) {
     std::ifstream file;
     file.open(pathName);
 
-    Airline airline1 = Airline();
-    Airline airline2 = Airline();
+
+    Airline airline = Airline();
 
     for(std::string line; std::getline(file, line);){
         if(count == 0){
@@ -108,8 +108,8 @@ void FlightManager2000::addEdges(const std::string &pathName) {
         std::getline(inputString, data, '\r');
         airlineCode = data;
 
-        airline2 = Airline(airlineCode,"","","");
-        airlineName = airlines.find(airline2)->getName();
+        airline = Airline(airlineCode, "", "", "");
+        airlineName = airlines.find(airline)->getName();
 
         airportsGraph.addEdge(src, dest, airlineCode, airlineName);
     }
@@ -123,7 +123,7 @@ void FlightManager2000::bestFlightAtoB() {
 
     std::cout << "| Select one of the following options:                     \n";
     std::cout << "|                                                          \n";
-    std::cout << "| 1 - Simple search                                        \n";
+    std::cout << "| 1 - Search flight airport to airport                     \n";
     std::cout << "| 2 - Search flight city to city                           \n";
     std::cout << "| 3 - Search flight city to airport                        \n";
     std::cout << "| 4 - Search flight airport to city                        \n";
@@ -168,6 +168,7 @@ void FlightManager2000::bestFlightAtoB() {
 
                         airlinesVector.push_back(airlineString);
                     }
+
                     Airline airlineHelper;
                     bool exit = false;
 
