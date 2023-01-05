@@ -405,47 +405,72 @@ void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest,
      std::cout << "| 3 - Equator                                              \n";
      std::cout << "| 4 - Tropic of Capricorn                                  \n";
      std::cout << "| 5 - Antarctic Polar Circle                               \n";
+     std::cout << "| 6 - See them all                                         \n";
      std::cout << "|                                                          \n";
 
      while(true){
-         std::cout << "| Enter here the 1st choice: ";
-         std::cin >> choice1;
+         while(true){
+             std::cout << "| Enter here the 1st choice: ";
+             std::cin >> choice1;
 
-         if(std::cin.eof()){
-             std::cout << "| Not a valid input, please try again                      \n";
-             std::cout << "|                                                          \n";
-             choice1 = 0;
-             std::cin.clear();
-             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-         }
-
-         std::cout << "| Enter here the 2nd choice: ";
-         std::cin >> choice2;
-
-         if(std::cin.eof()){
-             std::cout << "| Not a valid input, please try again                      \n";
-             std::cout << "|                                                          \n";
-             choice2 = 0;
-             std::cin.clear();
-             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-         }
-
-         if(1 > choice1 || choice1 > 5 || 1 > choice2 || choice2> 5){
-             std::cout << "| Error: One or both inputs are invalid!                   \n";
-             break;
-         }
-
-         else{
-             std::list<Graph::Airport> answer;
-             for (auto &node : airports) {
-                 node.second.visited = false;
-                 node.second.low = -1;
-                 node.second.num = -1;
+             if(std::cin.eof()){
+                 std::cout << "| Not a valid input, please try again                      \n";
+                 std::cout << "|                                                          \n";
+                 choice1 = 0;
+                 std::cin.clear();
+                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
              }
-             int order = 1;
-             for (auto &nodes : airports)
-                 if (!nodes.second.visited)
-                     dfs_articulation_points(nodes, order, answer);
+
+             else if(1 > choice1 || choice1 > 6){
+                 std::cout << "| Error: First input inputs is invalid, try again!                   \n";
+                 std::cout << "|                                                                     \n";
+                 choice1 = 0;
+                 std::cin.clear();
+                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+             }
+
+             else break;
+         }
+
+         if(choice1 != 6){
+             while(true){
+                 std::cout << "| Enter here the 2nd choice: ";
+                 std::cin >> choice2;
+
+                 if(std::cin.eof()){
+                     std::cout << "| Not a valid input, please try again                      \n";
+                     std::cout << "|                                                          \n";
+                     choice2 = 0;
+                     std::cin.clear();
+                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                 }
+
+                 else if(1 > choice2 || choice2 > 6 || choice2 == 6){
+                     std::cout << "| Error: Second input is invalid, try again!                   \n";
+                     std::cout << "|                                                                     \n";
+                     choice2 = 0;
+                     std::cin.clear();
+                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                 }
+
+                 else break;
+             }
+         }
+         break;
+     }
+
+     std::list<Graph::Airport> answer;
+     std::list<Graph::Airport> answer2;
+
+     for (auto &node : airports) {
+         node.second.visited = false;
+         node.second.low = -1;
+         node.second.num = -1;
+     }
+     int order = 1;
+     for (auto &nodes : airports)
+         if (!nodes.second.visited)
+             dfs_articulation_points(nodes, order, answer);
 
              /*
              longitude
@@ -454,28 +479,69 @@ void Graph::superBestFlightAtoB(const std::string& src, const std::string& dest,
              equator = 0;
              arcticPolarCircle = 66.33493;
              antarcticPolarCircle = -66.33493;
-              */
+             */
 
-             std::vector<std::pair<std::string, double>> longitudes;
-             longitudes.push_back({"Arctic Polar Circle", 66.335});
-             longitudes.push_back({"Tropic of Cancer", 23.439});
-             longitudes.push_back({"Equator", 0.000});
-             longitudes.push_back({"Tropic of Capricorn", -23.439});
-             longitudes.push_back({"Antarctic Polar Circle", -66.335});
+     std::vector<std::pair<std::string, double>> latitudes;
+     latitudes.push_back({"Arctic Polar Circle", 66.335});
+     latitudes.push_back({"Tropic of Cancer", 23.439});
+     latitudes.push_back({"Equator", 0.000});
+     latitudes.push_back({"Tropic of Capricorn", -23.439});
+     latitudes.push_back({"Antarctic Polar Circle", -66.335});
 
-             std::cout << "| Here are the connection airports between " + longitudes[choice1-1].first + " and " + longitudes[choice2-1].first + ":\n";
+     if(choice1 != 6) {
+         for (const Airport &airport: answer) {
+             if (airport.latitude >= std::min(latitudes[choice1 - 1].second, latitudes[choice2 - 1].second) and
+                 airport.latitude <= std::max(latitudes[choice1 - 1].second, latitudes[choice2 - 1].second)) {
+                 answer2.push_back(airport);
+             }
+         }
+         std::cout << "| There were found " + std::to_string(answer2.size()) + " connection airports between " +
+                      latitudes[choice1 - 1].first + " and " + latitudes[choice2 - 1].first + "\n";
+     }
 
-             for (const Airport& airport : answer) {
-                 if (airport.longitude >= std::min(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second) and airport.longitude <= std::max(longitudes[choice1 - 1].second, longitudes[choice2 - 1].second)) {
-                     std::cout << "| Airport Name: " + airport.name + "; Airport Code: " + airport.code + "; Airport Location: " + std::to_string(airport.latitude) + ", " + std::to_string(airport.longitude) + '\n';
-                 }
+     else {
+         std::cout << "| There were found " + std::to_string(answer.size()) + " connection airports\n";
+     }
+
+     std::cout << "| Do you wish to see them all?\n";
+     std::cout << "| Do you wish to see any of them? ('yes'/'no?)?\n";
+     std::string printChoice;
+
+     while (true) {
+         std::cout << "| Enter here :";
+         std::cin >> printChoice;
+
+         if (printChoice == "yes" && choice1 != 6) {
+             std::cout << "| Here are the connection airports between " + latitudes[choice1 - 1].first + " and " +
+                          latitudes[choice2 - 1].first + ":\n";
+             for (const Airport &airport: answer2) {
+                 std::cout << "| Airport Name: " + airport.name + "; Airport Code: " + airport.code +
+                              "; Airport Location: " + std::to_string(airport.latitude) + ", " +
+                              std::to_string(airport.longitude) + '\n';
              }
              std::cout << "|\n";
              break;
+         } else if (printChoice == "yes" && choice1 == 6) {
+             std::cout << "| Here are the connection airports" << ":\n";
+             for (const Airport &airport: answer) {
+                 std::cout << "| Airport Name: " + airport.name + "; Airport Code: " + airport.code +
+                              "; Airport Location: " + std::to_string(airport.latitude) + ", " +
+                              std::to_string(airport.longitude) + '\n';
+             }
+             std::cout << "|\n";
+             break;
+         } else if (printChoice == "no") break;
+
+         else {
+             std::cout << "| Not a valid input, please try again                      \n";
+             std::cout << "|                                                          \n";
+             printChoice = "";
+             std::cin.clear();
+             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
          }
      }
-
 }
+
 
 void Graph::locationShortestPath(double latitude, double longitude, int range, const std::string& dest, std::vector<std::string>& airlines) {
     std::vector<std::pair<std::string,int>> output;
